@@ -35,7 +35,7 @@ class Article
     private Collection $tag;
 
     #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'articles')]
-    private Collection $categorie;
+    private Collection $categories;
 
     #[ORM\OneToMany(mappedBy: 'article', targetEntity: Commentaire::class, orphanRemoval: true)]
     private Collection $commentaires;
@@ -44,7 +44,7 @@ class Article
     public function __construct()
     {
         $this->tag = new ArrayCollection();
-        $this->categorie = new ArrayCollection();
+        $this->categories = new ArrayCollection();
         $this->comment = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
     }
@@ -129,15 +129,15 @@ class Article
     /**
      * @return Collection<int, Categorie>
      */
-    public function getCategorie(): Collection
+    public function getCategories(): Collection
     {
-        return $this->categorie;
+        return $this->categories;
     }
 
     public function addCategorie(Categorie $categorie): self
     {
-        if (!$this->categorie->contains($categorie)) {
-            $this->categorie->add($categorie);
+        if (!$this->categories->contains($categorie)) {
+            $this->categories->add($categorie);
         }
 
         return $this;
@@ -145,7 +145,7 @@ class Article
 
     public function removeCategorie(Categorie $categorie): self
     {
-        $this->categorie->removeElement($categorie);
+        $this->categories->removeElement($categorie);
 
         return $this;
     }

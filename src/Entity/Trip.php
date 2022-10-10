@@ -2,47 +2,68 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\TripRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TripRepository::class)]
-#[ApiResource]
+#[ApiResource,ApiFilter(SearchFilter::class, properties: ['categories.name' => 'exact', 'tags.name' => 'exact','description' => 'partial'])]
+#[GetCollection(normalizationContext: ['groups' => ['Trips','Trip_Tags','Trip_Categories']])]
+
 class Trip
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['Trips'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['Trips'])]
     private ?string $ville = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['Trips'])]
     private ?\DateTimeInterface $dateDepart = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['Trips'])]
     private ?\DateTimeInterface $dateRetour = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['Trips'])]
     private ?string $description = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['Trips'])]
     private ?int $nbParticipants = null;
 
-    #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'trips')]
-    private Collection $categories;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'trips')]
+    #[Groups(['Trips'])]
     private Collection $tags;
+
+    #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'trips')]
+    #[Groups(['Trips'])]
+    private Collection $categories;
+
 
     public function __construct()
     {
-        $this->categories = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -110,29 +131,6 @@ class Trip
         return $this;
     }
 
-    /**
-     * @return Collection<int, categorie>
-     */
-    public function getCategories(): Collection
-    {
-        return $this->categories;
-    }
-
-    public function addCategory(categorie $category): self
-    {
-        if (!$this->categories->contains($category)) {
-            $this->categories->add($category);
-        }
-
-        return $this;
-    }
-
-    public function removeCategory(categorie $category): self
-    {
-        $this->categories->removeElement($category);
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, tag>
@@ -154,6 +152,30 @@ class Trip
     public function removeTag(tag $tag): self
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Categorie>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Categorie $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Categorie $category): self
+    {
+        $this->categories->removeElement($category);
 
         return $this;
     }
