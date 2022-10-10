@@ -60,6 +60,11 @@ class Trip
     private Collection $categories;
 
 
+
+    #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['Trips'])]
+    private ?string $photo = null;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -179,4 +184,17 @@ class Trip
 
         return $this;
     }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(string $photo): self
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
 }

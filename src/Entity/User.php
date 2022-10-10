@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -20,33 +21,43 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['Author','Article_Author'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['Author','Article_Author'])]
     private ?string $username = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['Author'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['Author'])]
     private ?string $firstname = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['Author'])]
     private ?\DateTimeInterface $ddn = null;
 
     #[ORM\Column(length: 15, nullable: true)]
+    #[Groups(['Author'])]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['Author'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['Author'])]
     private ?string $password = null;
 
     #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Article::class, orphanRemoval: true)]
+    #[Groups(['Author'])]
     private Collection $articles;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Commentaire::class, orphanRemoval: true)]
+    #[Groups(['Author'])]
     private Collection $commentaires;
 
     #[ORM\Column]

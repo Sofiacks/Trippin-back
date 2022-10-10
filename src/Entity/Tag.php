@@ -16,11 +16,11 @@ class Tag
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['Tags','Trip_Tags'])]
+    #[Groups(['Tags','Trip_Tags','Article_Tags'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['Tags','Trip_Tags'])]
+    #[Groups(['Tags','Trip_Tags','Article_Tags'])]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Trip::class, mappedBy: 'tags')]
