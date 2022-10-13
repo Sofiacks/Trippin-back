@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\ApiFilter;
@@ -19,7 +20,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TripRepository::class)]
-#[ApiResource,ApiFilter(SearchFilter::class, properties: ['categories.name' => 'exact', 'tags.name' => 'exact','description' => 'partial'])]
+#[ApiResource,
+    ApiFilter(SearchFilter::class, properties: ['ville' => 'partial', 'categories.name' => 'exact', 'tags.name' => 'exact','description' => 'partial']),
+    ApiFilter(DateFilter::class, properties: ['dateDepart', 'dateRetour'])]
 #[GetCollection(normalizationContext: ['groups' => ['Trips','Trip_Tags','Trip_Categories']])]
 
 class Trip
